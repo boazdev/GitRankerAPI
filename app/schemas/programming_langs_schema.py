@@ -1,0 +1,30 @@
+from typing import Optional
+from app.schemas.base import BaseSchema
+class ProgrammingLangs(BaseSchema):
+    java: int = 0
+    py: int = 0
+    js: int = 0
+    php: int = 0
+    rb: int = 0
+    cpp: int = 0
+    h: int = 0
+    c: int = 0
+    cs: int = 0
+    html: int = 0
+    ipynb: int = 0
+    css: int = 0
+    ts: int = 0
+    kt: int = 0
+    dart: int = 0
+    m: int = 0
+    swift: int = 0
+    go: int = 0
+    rs: int = 0
+    scala: int = 0
+    scss: int = 0
+    asm: int = 0
+    pwn: int = 0
+    inc: int = 0
+    #user_metadata_id: int = 0
+class UserLinesCode(ProgrammingLangs):
+    users_metadata_id: Optional[int] = None
