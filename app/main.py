@@ -2,9 +2,17 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.routers import users_router
 from app.settings.config import get_settings
-
+from app.database import async_db
 app = FastAPI()
 #models.Base.metadata.create_all(bind=engine)
+
+@app.on_event("startup")
+async def startup():
+    await async_db.startup()
+
+@app.on_event("shutdown")
+async def shutdown():
+    await async_db.get_async_db_instance().disconnect()
 
 app.add_middleware(
     CORSMiddleware,

@@ -1,3 +1,5 @@
+import csv
+import io
 import traceback
 from fastapi import APIRouter, Depends,HTTPException, Response
 from fastapi.responses import StreamingResponse
@@ -6,8 +8,12 @@ from fastapi.responses import JSONResponse
 from app.schemas.programming_langs_schema import ProgrammingLangs, UserLinesCode
 
 from app.schemas.user_create_request import UserCreateRequest
+from app.schemas.user_schema import UserMetaDataSchema
 from app.service import users_code_service, users_service
+from app.service.github_scanner_service import GithubScannerService
+from app.service.users_metadata_async_service import get_user_ranks
 from app.settings.config import get_settings
+from app.utils.helpers import convert_dict_to_model
 
 router = APIRouter(prefix="/users", tags=["users"])
 from app.schemas.options_schema import OptionsIn
@@ -39,6 +45,30 @@ def create_user(user_data: UserCreateRequest, db: Session = Depends(get_db)):
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))  # Handle errors gracefully
     
+@router.get("/users/{username}",response_model=dict, status_code=200)
+async def get_user_metadata_ranks(username:str):
+    github_scanner_service  = GithubScannerService()
+    token = await github_scanner_service.get_user_metadata_token(username=username)
+    user_data = None
+    while(user_data==None):
+        user_data = await github_scanner_service.get_user_metadata_by_token(token=token)
+    #print(f'Received user_data from github scanner service: {user_data}')
+    csv_string = user_data
+    reader = csv.DictReader(io.StringIO(csv_string))
+    user_meta_data = next(reader)
+    #data_row = next(reader)
+    #user_meta_data = UserMetaDataSchema(**data_row)
+    user_meta_data = convert_dict_to_model(user_meta_data)
+    print(f'user_meta_data headers: {user_meta_data}')
+    #print(f'user_meta_data row: {data_row}')
+    user_ranks = await get_user_ranks(user_meta_data)
+    """ print(
+        f'user ranks: count of users:{user_ranks["users_cnt"]} stars:{user_ranks["rank_stars"]}, '
+        f'commits:{user_ranks["rank_commits"]}, rank lines code:{user_ranks["rank_lines_code"]}'
+    ) """
+    return user_ranks
+
+
 def verify_api_key(api_key:str)->bool:
     if(api_key!=get_settings().ranker_api_key):
         return False
