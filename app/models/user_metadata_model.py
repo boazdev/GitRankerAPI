@@ -1,5 +1,5 @@
 import datetime
-from sqlalchemy import  TIMESTAMP, Column, Date, Integer, String, func
+from sqlalchemy import  TIMESTAMP, Column, Date, DateTime, Integer, String, func
 from app.database.db import Base
 
 
@@ -17,5 +17,8 @@ class UserMetaData(Base):
     following = Column(Integer, default=0)
     public_repos = Column(Integer, default=0)
     empty_repos = Column(Integer, default=0)
-    forked_repos = Column(Integer, default=0)
+    forked_repos = Column(Integer, default=0) #TODO: On update updated_at is not updated. solve it.
+    created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
     #updated_at = Column(Date, default=Column(Date, datetime.date))
+    #updated_at = Column(DateTime, server_default=func.now(), onupdate=func.current_timestamp())

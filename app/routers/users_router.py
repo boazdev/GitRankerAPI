@@ -32,7 +32,7 @@ def create_user(user_data: UserCreateRequest, db: Session = Depends(get_db)):
         user_lines_code.users_metadata_id = user.id
         print(f'users code data model dump: {user_lines_code.model_dump()}')
         users_code_service.create_user_code(user_code=user_lines_code, db=db)
-        return user
+        return "Created"
 
     except Exception as e:
         print(f'exception in user router: {e}')
