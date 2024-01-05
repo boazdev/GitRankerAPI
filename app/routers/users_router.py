@@ -52,20 +52,13 @@ async def get_user_metadata_ranks(username:str):
     user_data = None
     while(user_data==None):
         user_data = await github_scanner_service.get_user_metadata_by_token(token=token)
-    #print(f'Received user_data from github scanner service: {user_data}')
     csv_string = user_data
     reader = csv.DictReader(io.StringIO(csv_string))
     user_meta_data = next(reader)
-    #data_row = next(reader)
-    #user_meta_data = UserMetaDataSchema(**data_row)
+
     user_meta_data = convert_dict_to_model(user_meta_data)
-    print(f'user_meta_data headers: {user_meta_data}')
-    #print(f'user_meta_data row: {data_row}')
+
     user_ranks = await get_user_ranks(user_meta_data)
-    """ print(
-        f'user ranks: count of users:{user_ranks["users_cnt"]} stars:{user_ranks["rank_stars"]}, '
-        f'commits:{user_ranks["rank_commits"]}, rank lines code:{user_ranks["rank_lines_code"]}'
-    ) """
     return user_ranks
 
 

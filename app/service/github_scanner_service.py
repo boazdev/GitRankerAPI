@@ -50,7 +50,6 @@ class GithubScannerService:
         try:
             async with httpx.AsyncClient() as client:
                 resp = await client.post(url=self.api_url , headers=self.headers, data=payload)
-                print(f'resp status code: {resp.status_code}')
                 if resp.status_code == 404:
                     raise HTTPException(status_code=404, detail=" not found")
                 elif resp.status_code != 200:
