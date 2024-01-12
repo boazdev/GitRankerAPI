@@ -1,9 +1,27 @@
+from functools import wraps
+import time
+from psycopg2 import OperationalError
 from sqlalchemy.orm import Session
 from sqlalchemy import func,text,asc #select, join
 from typing import Optional
+from app.constants.sql_constants import SQL_QUERY_MAX_RETRY
 from app.models.user_metadata_model import UserMetaData
 from app.schemas import user_schema
 from sqlalchemy.exc import IntegrityError
+
+def retry_on_operational_error(retries=10, delay=1):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            for i in range(retries):
+                try:
+                    return func(*args, **kwargs)
+                except OperationalError as e:
+                    print(f'OperationalError: {e}, retrying {i} time...')
+                    time.sleep(delay)
+            raise OperationalError(f"Failed after {retries} retries")
+        return wrapper
+    return decorator
 
 def get_users(db: Session, skip: int = 0, limit: int = 100)->list[UserMetaData]:
     return db.query(UserMetaData).offset(skip).limit(limit).all()
@@ -22,6 +40,7 @@ def get_user_by_username(db: Session, username: str) -> UserMetaData:
 def get_user_by_id(db: Session, id: str):
     return db.query(UserMetaData).filter(UserMetaData.id == id).first()
 
+@retry_on_operational_error(retries=SQL_QUERY_MAX_RETRY, delay=1)
 def create_user(db: Session, user: user_schema.UserMetaDataSchema) -> Optional[user_schema.UserMetaDataSchemaWithId]:
     try:
         db_user = db.query(UserMetaData).filter(UserMetaData.username == user.username).first()
@@ -81,3 +100,5 @@ def delete_all(db:Session):
     except Exception as e:
         print(f"delete error: {e.__str__()}")
         return None
+
+

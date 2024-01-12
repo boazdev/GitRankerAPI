@@ -3,6 +3,10 @@ in root folder:
 uvicorn app.main:app --reload
 uvicorn app.main:app --host 127.0.0.1 --port 5005 --reload
 
+pytest tests/test_files.py::TestFiles::test_megamillions
+run pytest with console output from main app:
+pytest -s 
+
 https://github.com/teamhide/fastapi-boilerplate/tree/master (fast api with async sqlalchemy)
 docker build -t git-ranker-api .
 
