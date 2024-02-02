@@ -3,5 +3,5 @@ services:
   git-ranker-api:
     image: git-ranker-api  # Assuming the image is built locally
     ports:
-      - "5005:5005"  # Use quotes for port mapping
+      - "5005:8000"  # Use quotes for port mapping
 

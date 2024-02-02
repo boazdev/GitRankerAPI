@@ -17,7 +17,7 @@ class UserMetaData(Base):
     following = Column(Integer, default=0)
     public_repos = Column(Integer, default=0)
     empty_repos = Column(Integer, default=0)
-    forked_repos = Column(Integer, default=0) #TODO: On update updated_at is not updated. solve it.
+    forked_repos = Column(Integer, default=0) 
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
     #updated_at = Column(Date, default=Column(Date, datetime.date))
