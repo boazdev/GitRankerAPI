@@ -2,13 +2,13 @@ from functools import wraps
 import time
 from psycopg2 import OperationalError
 from sqlalchemy.orm import Session
-from sqlalchemy import func,text,asc #select, join
+from sqlalchemy import func,text,asc, update #select, join
 from typing import Optional
 from app.constants.sql_constants import SQL_QUERY_MAX_RETRY
 from app.models.user_metadata_model import UserMetaData
 from app.schemas import user_schema
 from sqlalchemy.exc import IntegrityError
-
+from sqlalchemy.ext.asyncio import AsyncSession
 """ def retry_on_operational_error(retries=10, delay=1):
     def decorator(func):
         @wraps(func)
@@ -44,27 +44,14 @@ async def get_user_by_username(db: AsyncSession, username: str) -> UserMetaData:
 async def create_user(db: AsyncSession, user: user_schema.UserMetaDataSchema) -> Optional[user_schema.UserMetaDataSchemaWithId]:
     db_user = UserMetaData(**user.model_dump())
     db.add(db_user)
-    await db.commit()
-    await db.close()
+    await db.flush()
+    await db.refresh(db_user)
     return db_user
-""" except Exception as e:
-    await db.rollback()
-    print(f'sql exception: {e}')
-    raise """
-""" @classmethod
-    async def create(cls, session: AsyncSession, title: str, notes: list[Note]) -> Notebook:
-        notebook = Notebook(
-            title=title,
-            notes=notes,
-        )
-        session.add(notebook)
-        await session.flush()
-        # To fetch notes
-        new = await cls.read_by_id(session, notebook.id, include_notes=True)
-        if not new:
-            raise RuntimeError()
-        return new """
 
+async def update_user(db: AsyncSession, user: user_schema.UserMetaDataSchema, user_id:int): #fill this function
+    db_user = user
+    await db.execute(update(UserMetaData).where(UserMetaData.id == user_id).values(**user.model_dump()))
+    return db_user
 """ def get_users(db: Session, skip: int = 0, limit: int = 100)->list[UserMetaData]:
     return db.query(UserMetaData).offset(skip).limit(limit).all()
 

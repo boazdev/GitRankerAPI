@@ -47,7 +47,7 @@ async def create_user(user_data: UserCreateRequest, db: AsyncSession = Depends(g
         raise HTTPException(status_code=500, detail=str(e))  # Handle errors gracefully """
     
 @router.post("/users", status_code=201)
-async def create_user2(user_data: UserCreateRequest, db: AsyncSession = Depends(get_db)):
+async def create_user(user_data: UserCreateRequest, db: AsyncSession = Depends(get_db)):
     if(not verify_api_key(user_data.api_key)):
         raise HTTPException(status_code=401,detail="incorrect API key")
     try:
@@ -56,7 +56,18 @@ async def create_user2(user_data: UserCreateRequest, db: AsyncSession = Depends(
         user = await users_service.get_user_by_username(username=user_data.user_meta_data.username,db=db)
         if user==None:
             user = await users_service.create_user(user = user_data.user_meta_data,db=db)
+            print(f'user id: {user.id}')
+            user_lines_code = user_data.lines_by_languages
+            user_lines_code.users_metadata_id = user.id
+            await users_code_service.create_user_code(user_code=user_lines_code, db=db)
             return user
+        else:
+            user_meta_updated = await users_service.update_user(user_id=user.id,user = user_data.user_meta_data,db=db)
+            user_lines_code = user_data.lines_by_languages
+            user_lines_code.users_metadata_id = user.id
+            await users_code_service.update_user_code(user_code=user_lines_code, db=db)
+            print("updated user")
+            return "updated user"
         return "User exists"
         """ user_lines_code = user_data.lines_by_languages
         user_lines_code.users_metadata_id = user.id

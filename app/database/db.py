@@ -33,13 +33,20 @@ AsyncSessionLocal = sessionmaker(
     autocommit=False,
     autoflush=False,
     bind=engine,
-    class_=AsyncSession
+    class_=AsyncSession,
+
 )
 
 Base = declarative_base()
 
 # Define get_db as an async generator
-async def get_db():
+async def get_db() -> AsyncSession:
     async with AsyncSessionLocal() as session:
-        async with session.begin():
-            yield session
+        try:
+            async with session.begin():
+                yield session
+        except Exception as e:
+            await session.rollback()  # Rollback on any unexpected errors
+            raise e  # Re-raise the exception for proper handling
+        finally:
+            await session.close()  # Ensure session closure even if exceptions occur
