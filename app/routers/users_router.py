@@ -68,12 +68,6 @@ async def create_user(user_data: UserCreateRequest, db: AsyncSession = Depends(g
             await users_code_service.update_user_code(user_code=user_lines_code, db=db)
             print("updated user")
             return "updated user"
-        return "User exists"
-        """ user_lines_code = user_data.lines_by_languages
-        user_lines_code.users_metadata_id = user.id
-        #print(f'users code data model dump: {user_lines_code.model_dump()}')
-        await users_code_service.create_user_code(user_code=user_lines_code, db=db) """
-        return "Created"
 
     except Exception as e:
         print(f'exception in user router: {e}')
