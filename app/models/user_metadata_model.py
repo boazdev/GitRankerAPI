@@ -1,6 +1,7 @@
 import datetime
 from sqlalchemy import  TIMESTAMP, Column, Date, DateTime, Integer, String, func
-from app.database.db import Base
+from sqlalchemy.orm import relationship
+from app.database.async_sqla_db import Base
 
 
 class UserMetaData(Base):
@@ -22,3 +23,4 @@ class UserMetaData(Base):
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
     #updated_at = Column(Date, default=Column(Date, datetime.date))
     #updated_at = Column(DateTime, server_default=func.now(), onupdate=func.current_timestamp())
+    users_code_data = relationship("UserCodeData", back_populates="users_metadata", uselist=False)

@@ -1,6 +1,6 @@
 from sqlalchemy import  TIMESTAMP, Column, ForeignKey, Integer, String, func
-from app.database.db import Base
-
+from app.database.async_sqla_db import Base
+from sqlalchemy.orm import relationship
 
 class UserCodeData(Base):
     __tablename__ = 'users_code_data'
@@ -60,4 +60,6 @@ class UserCodeData(Base):
     go_repositories = Column(Integer, default=0)
     r_repositories = Column(Integer, default=0)
     rust_repositories = Column(Integer, default=0)
+
+    users_metadata = relationship("UserMetaData", back_populates="users_code_data")
     

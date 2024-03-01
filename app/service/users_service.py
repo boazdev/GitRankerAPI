@@ -6,9 +6,12 @@ from sqlalchemy import func,text,asc, update #select, join
 from typing import Optional
 from app.constants.sql_constants import SQL_QUERY_MAX_RETRY
 from app.models.user_metadata_model import UserMetaData
+from app.models.user_code_data_model import UserCodeData
 from app.schemas import user_schema
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import joinedload
+from app.schemas.fps_query_schema import FPSQueryParams
 """ def retry_on_operational_error(retries=10, delay=1):
     def decorator(func):
         @wraps(func)
@@ -52,6 +55,30 @@ async def update_user(db: AsyncSession, user: user_schema.UserMetaDataSchema, us
     db_user = user
     await db.execute(update(UserMetaData).where(UserMetaData.id == user_id).values(**user.model_dump()))
     return db_user
+
+async def get_users_metadata_fps(fps_params: FPSQueryParams,db: AsyncSession)->list:
+    result = await db.execute(
+        select(UserMetaData).join(UserCodeData)
+        .options(joinedload(UserMetaData.users_code_data))
+        .limit(20)
+        .offset(0)
+    )
+    data_rows = result.scalars().all()
+    
+
+    return_data = [row_to_dict(row) for row in data_rows]
+
+    #print(data)
+    return return_data
+
+def row_to_dict(row):
+    data_dict = {col.name: getattr(row, col.name) for col in row.__table__.columns}
+    if hasattr(row, 'users_code_data') and row.users_code_data is not None:
+        user_code_data = row.users_code_data
+        for col in user_code_data.__table__.columns:
+            data_dict[f"{col.name}"] = getattr(user_code_data, col.name)
+    return data_dict
+    #return dict((col, getattr(row, col)) for col in row.__table__.columns.keys())
 """ def get_users(db: Session, skip: int = 0, limit: int = 100)->list[UserMetaData]:
     return db.query(UserMetaData).offset(skip).limit(limit).all()
 

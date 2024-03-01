@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends,HTTPException, Response
 from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi.responses import JSONResponse
+from app.models.user_code_data_model import UserCodeData
 from app.schemas.fps_query_schema import FPSQueryParams
 from app.schemas.programming_langs_schema import ProgrammingLangs, UserLinesCode
 
@@ -74,14 +75,21 @@ async def create_user(user_data: UserCreateRequest, db: AsyncSession = Depends(g
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))  # Handle errors gracefully
 
-@router.get("/{username}")
+@router.get("/username/{username}")
 async def get_user_metadata(username:str,db: AsyncSession = Depends(get_db)):
     return await users_service.get_user_by_username(username=username,db=db)
 
 @router.get("/fps")
-async def get_fps_data(params: FPSQueryParams = Depends()):
+async def get_fps_data(params: FPSQueryParams = Depends(), db: AsyncSession = Depends(get_db)):
     print(f'params: {params}')
-    return params
+    users_metadata_lst = await users_service.get_users_metadata_fps(fps_params=params, db=db)
+    results = []
+    """ for user in users_metadata_lst:
+        jason ={}
+        jason["meta"] = UserMetaDataSchema.model_validate(user)
+        jason["code"] = ProgrammingLangs.model_validate(user.users_code_data)
+        results.append(jason) """
+    return users_metadata_lst
 
 @router.get("/users/{username}",response_model=dict, status_code=200)
 async def get_user_metadata_ranks(username:str):
@@ -99,6 +107,8 @@ async def get_user_metadata_ranks(username:str):
 
     user_ranks = await get_user_ranks(user_meta_data)
     return user_ranks
+
+
 
 
 

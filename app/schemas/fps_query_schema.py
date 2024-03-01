@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Optional
 from fastapi import Query
 from pydantic import BaseModel, Field
 
@@ -19,3 +19,6 @@ class FPSQueryParams(BaseModel):
     filter_operator: Optional[FilterOperator] = Field(default=FilterOperator.GTE)
     page_size: int = Query(10, ge=1)  # Default page size of 10
     page_start: int = Query(0, ge=0)
+    filter_by: Optional[List[str]] = Query(None)
+    sort_by: Optional[str] = Query(None)
+    sort_direction: Optional[str] = Query(None)

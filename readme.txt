@@ -13,5 +13,10 @@ docker build -t git-ranker-api .
 docker tag git-ranker-api lancellot.azurecr.io/git-ranker-api:latest
 docker push lancellot.azurecr.io/git-ranker-api:latest
 docker pull lancellot.azurecr.io/git-ranker-api:latest
+
+docker tag git-ranker-api artofterran135/git-ranker-api:latest
+docker push artofterran135/git-ranker-api:latest
+docker pull artofterran135/git-ranker-api:latest
+
 results from github scanner api:
 "Name,Username,Url,Followers,Following,Forks,Commits,Stars,Code Lines,Tests,Keywords,Public Repos,Forked Repositories,Empty Repositories,Java Repositories,EJS Repositories,C# Repositories,JavaScript Repositories,Jupyter Notebook Repositories,C++ Repositories,CSS Repositories,Python Repositories,Node.js Repositories,Angular Repositories,React Repositories,HTML Repositories,Kotlin Repositories,C Repositories,TypeScript Repositories,Dart Repositories,Objective-C Repositories,Swift Repositories,Go Repositories,Rust Repositories,Ruby Repositories,Scala Repositories,PHP Repositories,R Repositories,SCSS Repositories,Assembly Repositories,Pawn Repositories\r\nNoam Rosenthal,noamr,https://github.com/noamr,102,4,34,386,132,17044,0,-,66,35,3,0,0,0,16,0,4,4,0,0,0,0,16,0,1,10,0,0,0,0,0,0,0,0,0,0,0,0\r\n"
