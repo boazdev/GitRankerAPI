@@ -1,3 +1,4 @@
+from typing import Optional
 from pydantic import BaseModel, Field
 
 from app.schemas.base import BaseSchema
@@ -16,7 +17,10 @@ class UserMetaDataSchema(BaseSchema):
     empty_repos: int = Field(0, alias="emptyRepos")
     forked_repos: int = Field(0, alias="forkedRepos")
 
-class UserMetaDataSchemaWithId(BaseSchema):
+class UserMetaDataSchemaWithId(UserMetaDataSchema):
     id: int
+
+class UserMetaDataSchemaWithLinkedinId(UserMetaDataSchemaWithId):
+    linkedin_profiles_id: Optional[int]
 
     

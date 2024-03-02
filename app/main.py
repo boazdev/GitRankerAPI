@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import users_router
+from app.routers import linkedin_router, users_router
 from app.settings.config import get_settings
 
 app = FastAPI()
@@ -15,6 +15,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.include_router(users_router.router)
+app.include_router(linkedin_router.router)
 
 @app.get('/health',status_code=200,response_model=str)
 def health_check():

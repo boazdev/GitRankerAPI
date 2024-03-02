@@ -26,3 +26,15 @@ WHERE NOT EXISTS (
 AND users.is_outlaw <> TRUE;
 
 
+    
+    SELECT column_name 
+FROM information_schema.columns
+WHERE table_schema = 'public'  -- Replace with your schema if needed
+AND table_name = 'users_code_data';
+
+    SELECT column_name 
+FROM information_schema.columns
+WHERE table_schema = 'public'  -- Replace with your schema if needed
+AND table_name = 'users_metadata';
+
+

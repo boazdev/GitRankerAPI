@@ -1,8 +1,8 @@
 import datetime
-from sqlalchemy import  TIMESTAMP, Column, Date, DateTime, Integer, String, func
+from sqlalchemy import  TIMESTAMP, Column, Date, DateTime, Integer, String, func, ForeignKey
 from sqlalchemy.orm import relationship
 from app.database.async_sqla_db import Base
-
+from app.models.linkedin_profiles_model import LinkedInProfile
 
 class UserMetaData(Base):
     __tablename__ = 'users_metadata'
@@ -21,6 +21,6 @@ class UserMetaData(Base):
     forked_repos = Column(Integer, default=0) 
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
-    #updated_at = Column(Date, default=Column(Date, datetime.date))
-    #updated_at = Column(DateTime, server_default=func.now(), onupdate=func.current_timestamp())
+    linkedin_profiles_id = Column(Integer, ForeignKey('profiles.id'), nullable=True)
+    linkedin_profile = relationship("LinkedInProfile", back_populates="users_metadata", uselist= False)
     users_code_data = relationship("UserCodeData", back_populates="users_metadata", uselist=False)
