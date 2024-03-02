@@ -1,4 +1,4 @@
-from functools import lru_cache
+""" from functools import lru_cache
 from databases import Database, DatabaseURL
 from app.settings.config import get_settings
 
@@ -15,3 +15,4 @@ async def shutdown():
 @lru_cache()
 def get_async_db_instance()->Database:
     return async_database_instance
+ """

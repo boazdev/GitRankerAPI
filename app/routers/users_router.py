@@ -15,7 +15,6 @@ from app.schemas.user_create_request import UserCreateRequest
 from app.schemas.user_schema import UserMetaDataSchema
 from app.service import users_code_service, users_service
 from app.service.github_scanner_service import GithubScannerService
-from app.service.users_metadata_async_service import get_user_ranks
 from app.settings.config import get_settings
 from app.utils.helpers import convert_dict_to_model
 
