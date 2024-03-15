@@ -61,9 +61,21 @@ async def create_user(user_data: UserCreateRequest, db: AsyncSession = Depends(g
 async def get_user_metadata(username:str,db: AsyncSession = Depends(get_db)):
     return await users_service.get_user_by_username(username=username,db=db)
 
-@router.get("/fps")
+
+filter_by_example = [
+    "lines_code>=500", "commits<1000", "java>=100", "java_repositories>=20", "followers=10"
+]
+
+""" @router.get("/fps")
 async def get_fps_data(params: FPSQueryParams = Depends(), filter_by: Annotated[list[str], Query()] = ["lines_code>=500", "commits<1000",
                                                                                                        "java>=100","java_repositories>=20","followers=10"],
+                        db: AsyncSession = Depends(get_db)):
+    users_metadata_lst = await users_service.get_users_metadata_fps(fps_params=params, filter_by_lst = filter_by, db=db)
+    return users_metadata_lst """
+
+@router.get("/fps")
+async def get_fps_data(params: FPSQueryParams = Depends(), filter_by: Annotated[list[str],
+                        Query(example=filter_by_example)] = [],
                         db: AsyncSession = Depends(get_db)):
     users_metadata_lst = await users_service.get_users_metadata_fps(fps_params=params, filter_by_lst = filter_by, db=db)
     return users_metadata_lst

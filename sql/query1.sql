@@ -38,3 +38,10 @@ WHERE table_schema = 'public'  -- Replace with your schema if needed
 AND table_name = 'users_metadata';
 
 
+ALTER TABLE users_metadata
+ADD COLUMN linkedin_profiles_id INTEGER NULL,
+ADD CONSTRAINT fk_linkedin_profiles
+FOREIGN KEY (linkedin_profiles_id)
+REFERENCES profiles (id);
+
+
