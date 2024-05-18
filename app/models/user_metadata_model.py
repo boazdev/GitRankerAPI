@@ -21,6 +21,8 @@ class UserMetaData(Base):
     forked_repos = Column(Integer, default=0) 
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
+    guid = Column(Integer, default=0)
+    avatar = Column(String, default="") 
     linkedin_profiles_id = Column(Integer, ForeignKey('profiles.id'), nullable=True)
     linkedin_profile = relationship("LinkedInProfile", back_populates="users_metadata", uselist= False)
     users_code_data = relationship("UserCodeData", back_populates="users_metadata", uselist=False)

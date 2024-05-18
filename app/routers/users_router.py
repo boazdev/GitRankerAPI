@@ -30,7 +30,7 @@ router = APIRouter(prefix="/users_metadata",
 
 
 @router.post("/users", status_code=201)
-async def create_user(user_data: UserCreateRequest, db: AsyncSession = Depends(get_db)):
+async def create_user(user_data: UserCreateRequest, db: AsyncSession = Depends(get_db)): #TODO: With Retries.
     if(not verify_api_key(user_data.api_key)):
         raise HTTPException(status_code=401,detail="incorrect API key")
     try:
