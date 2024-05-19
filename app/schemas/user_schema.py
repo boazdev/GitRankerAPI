@@ -16,6 +16,8 @@ class UserMetaDataSchema(BaseSchema):
     public_repos: int = Field(0, alias="publicRepos")
     empty_repos: int = Field(0, alias="emptyRepos")
     forked_repos: int = Field(0, alias="forkedRepos")
+    avatar:str
+    guid: int = Field(0,alias="guid")
 
 class UserMetaDataSchemaWithId(UserMetaDataSchema):
     id: int

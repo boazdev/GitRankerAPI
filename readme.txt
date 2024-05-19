@@ -14,7 +14,7 @@ docker tag git-ranker-api lancellot.azurecr.io/git-ranker-api:latest
 docker push lancellot.azurecr.io/git-ranker-api:latest
 docker pull lancellot.azurecr.io/git-ranker-api:latest
 
-docker tag git-ranker-api artofterran135/git-ranker-api:latest
+docker build -t artofterran135/git-ranker-api:latest .
 docker push artofterran135/git-ranker-api:latest
 docker pull artofterran135/git-ranker-api:latest
 
